@@ -81,13 +81,13 @@ class AgentMessagePrompt:
 		if elements_text != '':
 			if has_content_above:
 				elements_text = (
-					f'... {self.state.pixels_above} pixels above - scroll or extract content to see more ...\n{elements_text}'
+					f'... {self.state.pixels_above} pixels above - extract content to see more ...\n{elements_text}'
 				)
 			else:
 				elements_text = f'[Start of page]\n{elements_text}'
 			if has_content_below:
 				elements_text = (
-					f'{elements_text}\n... {self.state.pixels_below} pixels below - scroll or extract content to see more ...'
+					f'{elements_text}\n... {self.state.pixels_below} pixels below - extract content to see more ...'
 				)
 			else:
 				elements_text = f'{elements_text}\n[End of page]'

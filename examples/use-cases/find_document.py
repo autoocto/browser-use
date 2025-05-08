@@ -16,10 +16,10 @@ user_name = os.getenv('USER_NAME')
 user_password = os.getenv('USER_PASSWORD')
 
 task = """
-   ### Prompt for loading seismic doccenter
+   ### Prompt for finding a document in a web application
 
 **Objective:**
-Visit [Web application](<secret>site_url</secret>), login and load doccenter.
+Visit [Web application](<secret>site_url</secret>), login and find a document.
 
 ### Step 1: Navigate to the Website
 - Open [Web application](<secret>site_url</secret>).
@@ -40,7 +40,7 @@ Visit [Web application](<secret>site_url</secret>), login and load doccenter.
 - Click on the content named "24 slides static pptx" from the search result.
 - Wait for the content to load.
 
-**Important:** Ensure efficiency and accuracy throughout the process."""
+**Important:** Ensure accuracy throughout the process."""
 
 browser = Browser()
 

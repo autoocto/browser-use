@@ -28,10 +28,15 @@ async def _try_locate_and_act(page: Page, selector: str, action_type: str, text:
 	original_selector = selector
 	MAX_FALLBACKS = 50  # Increased fallbacks
 	# Increased timeouts for potentially slow pages
-	INITIAL_TIMEOUT = 10000  # Milliseconds for the first attempt (10 seconds)
+	INITIAL_TIMEOUT = 30000  # Milliseconds for the first attempt (10 seconds)
 	FALLBACK_TIMEOUT = 1000  # Shorter timeout for fallback attempts (1 second)
 
 	try:
+		if await page.query_selector('.spinner'):
+			await page.wait_for_selector('.spinner', state="detached", timeout=20000)
+
+		await page.wait_for_selector(selector, timeout=INITIAL_TIMEOUT)
+
 		locator = page.locator(selector).first
 		if action_type == 'click':
 			await locator.click(timeout=INITIAL_TIMEOUT)
@@ -41,7 +46,9 @@ async def _try_locate_and_act(page: Page, selector: str, action_type: str, text:
 			# This case should ideally not happen if called correctly
 			raise PlaywrightActionError(f"Invalid action_type '{action_type}' or missing text for fill. ({step_info})")
 		print(f"  Action '{action_type}' successful with original selector.")
-		await page.wait_for_timeout(500)  # Wait after successful action
+		await page.wait_for_timeout(1000)  # Wait after successful action
+		if await page.query_selector('.spinner'):
+			await page.wait_for_selector('.spinner', state="detached", timeout=20000)
 		return  # Successful exit
 	except Exception as e:
 		print(f"  Warning: Action '{action_type}' failed with original selector ({repr(selector)}): {e}. Starting fallback...")
@@ -80,7 +87,9 @@ async def _try_locate_and_act(page: Page, selector: str, action_type: str, text:
 					await locator.fill(text, timeout=FALLBACK_TIMEOUT)
 
 				print(f"    Action '{action_type}' successful with fallback selector: {repr(fallback_xpath)}")
-				await page.wait_for_timeout(500)
+				await page.wait_for_timeout(1000)
+				if await page.query_selector('.spinner'):
+					await page.wait_for_selector('.spinner', state="detached", timeout=20000)
 				return  # Successful exit after fallback
 			except Exception as fallback_e:
 				print(f'    Fallback attempt {i} failed: {fallback_e}')

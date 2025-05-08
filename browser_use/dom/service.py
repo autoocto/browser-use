@@ -31,7 +31,7 @@ class DomService:
 		self.page = page
 		self.xpath_cache = {}
 
-		self.js_code = resources.files('browser_use.dom').joinpath('buildDomTree.js').read_text()
+		self.js_code = resources.files('browser_use.dom').joinpath('buildDomTreeWithSpecialAttribute.js').read_text()
 
 	# region - Clickable elements
 	@time_execution_async('--get_clickable_elements')

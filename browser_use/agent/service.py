@@ -281,6 +281,15 @@ class Agent(Generic[Context]):
 				self.enable_memory = False
 		else:
 			self.memory = None
+		
+		# Browser setup
+		self.injected_browser = browser is not None
+		self.injected_browser_context = browser_context is not None
+		self.browser = browser or Browser()
+		self.browser.config.new_context_config.disable_security = self.browser.config.disable_security
+		self.browser_context = browser_context or BrowserContext(
+			browser=self.browser, config=self.browser.config.new_context_config
+		)
 
 		# Huge security warning if sensitive_data is provided but allowed_domains is not set
 		if self.sensitive_data and not self.browser.config.new_context_config.allowed_domains:
@@ -302,14 +311,6 @@ class Agent(Generic[Context]):
 				pass  # no point waiting if we're not in an interactive shell
 			logger.warning('‼️ Continuing with insecure settings for now... but this will become a hard error in the future!')
 
-		# Browser setup
-		self.injected_browser = browser is not None
-		self.injected_browser_context = browser_context is not None
-		self.browser = browser or Browser()
-		self.browser.config.new_context_config.disable_security = self.browser.config.disable_security
-		self.browser_context = browser_context or BrowserContext(
-			browser=self.browser, config=self.browser.config.new_context_config
-		)
 
 		# Callbacks
 		self.register_new_step_callback = register_new_step_callback

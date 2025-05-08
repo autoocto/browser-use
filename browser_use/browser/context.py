@@ -555,6 +555,9 @@ class BrowserContext:
 			and self.agent_current_page in session.context.pages
 			and not self.agent_current_page.is_closed()
 		):
+			await self.agent_current_page.wait_for_load_state('load')
+			if await self.agent_current_page.query_selector('.spinner'):
+				await self.agent_current_page.wait_for_selector('.spinner', state="detached", timeout=20000)
 			return self.agent_current_page
 
 		# If we're here, reconcile tab state and try again
@@ -566,6 +569,9 @@ class BrowserContext:
 			and self.agent_current_page in session.context.pages
 			and not self.agent_current_page.is_closed()
 		):
+			await self.agent_current_page.wait_for_load_state('load')
+			if await self.agent_current_page.query_selector('.spinner'):
+				await self.agent_current_page.wait_for_selector('.spinner', state="detached", timeout=20000)
 			return self.agent_current_page
 
 		# If still invalid, fall back to first page method as last resort
@@ -574,10 +580,17 @@ class BrowserContext:
 			page = session.context.pages[0]
 			self.agent_current_page = page
 			self.human_current_page = page
+			await page.wait_for_load_state('load')
+			if await page.query_selector('.spinner'):
+				await page.wait_for_selector('.spinner', state="detached", timeout=20000)
 			return page
 
 		# If no pages, create one
-		return await session.context.new_page()
+		new_page = await session.context.new_page()
+		await new_page.wait_for_load_state('load')
+		if await new_page.query_selector('.spinner'):
+			await new_page.wait_for_selector('.spinner', state="detached", timeout=20000)
+		return new_page
 
 	async def _create_context(self, browser: PlaywrightBrowser):
 		"""Creates a new browser context with anti-detection measures and loads cookies if available."""

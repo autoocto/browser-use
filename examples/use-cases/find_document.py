@@ -10,6 +10,7 @@ load_dotenv()
 import asyncio
 
 import os
+import json
 
 user_name = os.getenv('USER_NAME')
 user_password = os.getenv('USER_PASSWORD')
@@ -17,12 +18,16 @@ user_password = os.getenv('USER_PASSWORD')
 with open('examples/use-cases/find_document_task.md', 'r') as file:
     task = file.read()
 
+with open('examples/use-cases/find_document_init_actions.json', 'r') as actions_file:
+    initial_actions = json.load(actions_file)
+
 browser = Browser()
 
 agent = Agent(
 	task=task,
 	llm=ChatOpenAI(model='gpt-4o'),
 	browser=browser,
+	initial_actions=initial_actions,
 	sensitive_data={
 		'user_name': user_name,
 		'user_password': user_password,

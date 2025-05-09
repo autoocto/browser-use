@@ -64,6 +64,16 @@ class ActionModel(BaseModel):
 		if hasattr(action_params, 'index'):
 			action_params.index = index
 
+	def get_xpath(self) -> str | None:
+		"""Get the xpath of the action"""
+		params = self.model_dump(exclude_unset=True).values()
+		if not params:
+			return None
+		for param in params:
+			if param is not None and 'xpath' in param:
+				return param['xpath']
+		return None
+
 
 class ActionRegistry(BaseModel):
 	"""Model representing the action registry"""

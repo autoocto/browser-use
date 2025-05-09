@@ -1807,6 +1807,13 @@ class BrowserContext:
 	async def get_dom_element_by_index(self, index: int) -> DOMElementNode:
 		selector_map = await self.get_selector_map()
 		return selector_map[index]
+	
+	async def get_dom_element_by_xpath(self, xpath: str) -> DOMElementNode | None:
+		selector_map = await self.get_selector_map()
+		for element in selector_map.values():
+			if element.xpath == xpath:
+				return element
+		return None
 
 	async def save_cookies(self):
 		"""Save current cookies to file"""

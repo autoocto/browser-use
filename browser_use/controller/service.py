@@ -119,10 +119,13 @@ class Controller(Generic[Context]):
 		async def click_element_by_index(params: ClickElementAction, browser: BrowserContext):
 			session = await browser.get_session()
 
-			if params.index not in await browser.get_selector_map():
+			if params.xpath is None and params.index not in await browser.get_selector_map():
 				raise Exception(f'Element with index {params.index} does not exist - retry or use alternative actions')
 
-			element_node = await browser.get_dom_element_by_index(params.index)
+			if params.xpath is not None:
+				element_node = await browser.get_dom_element_by_xpath(params.xpath)
+			else:
+				element_node = await browser.get_dom_element_by_index(params.index)
 			initial_pages = len(session.context.pages)
 
 			# if element has file uploader then dont click
@@ -157,10 +160,13 @@ class Controller(Generic[Context]):
 			param_model=InputTextAction,
 		)
 		async def input_text(params: InputTextAction, browser: BrowserContext, has_sensitive_data: bool = False):
-			if params.index not in await browser.get_selector_map():
+			if params.xpath is None and params.index not in await browser.get_selector_map():
 				raise Exception(f'Element index {params.index} does not exist - retry or use alternative actions')
 
-			element_node = await browser.get_dom_element_by_index(params.index)
+			if params.xpath is not None:
+				element_node = await browser.get_dom_element_by_xpath(params.xpath)
+			else:
+				element_node = await browser.get_dom_element_by_index(params.index)
 			await browser._input_text_element_node(element_node, params.text)
 			if not has_sensitive_data:
 				msg = f'⌨️  Input {params.text} into index {params.index}'

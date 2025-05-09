@@ -1,6 +1,6 @@
 import logging
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 
 from browser_use import Agent, Browser
 
@@ -43,17 +43,19 @@ Visit [Web application](<secret>site_url</secret>), login and find a document.
 
 browser = Browser()
 
+local_model_name = 'phi4'
+
 agent = Agent(
 	task=task,
-	llm=ChatOpenAI(model='gpt-4o'),
+	llm=ChatOllama(model=local_model_name),
 	browser=browser,
 	sensitive_data={
 		'site_url': site_url,
 		'user_name': user_name,
 		'user_password': user_password,
 	},
-	save_conversation_path='conversation_updated_shorter_prompt.json',
-	save_playwright_script_path='playwright_script_updated_shorter_prompt.py',
+	save_conversation_path=f'conversation_updated_prompt_ollama_{local_model_name}.json',
+	save_playwright_script_path=f'playwright_script_updated_prompt_ollama_{local_model_name}.py',
 )
 
 

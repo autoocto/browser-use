@@ -506,7 +506,7 @@
         }
 
         // Priority 1: Check for specific attributes
-        const locatorAttributes = ["data-test", "data-testid", "data-atmt-id", "data-automation"];
+        const locatorAttributes = ["data-testid", "data-atmt-id", "data-test", "data-automation"];
         let matchingElements = [];
 
         for (const attr of locatorAttributes) {

@@ -781,6 +781,7 @@
       "optgroup",   // Option groups
       "fieldset",   // Form fieldsets (can be interactive with legend)
       "legend",     // Fieldset legends
+      "li",         
     ]);
 
     // Define explicit disable attributes and properties

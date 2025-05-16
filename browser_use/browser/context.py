@@ -558,8 +558,8 @@ class BrowserContext:
 			and not self.agent_current_page.is_closed()
 		):
 			await self.agent_current_page.wait_for_load_state('load')
-			if await self.agent_current_page.query_selector('.spinner'):
-				await self.agent_current_page.wait_for_selector('.spinner', state="detached", timeout=20000)
+			# if await self.agent_current_page.query_selector('.spinner'):
+			# 	await self.agent_current_page.wait_for_selector('.spinner', state="detached", timeout=20000)
 			return self.agent_current_page
 
 		# If we're here, reconcile tab state and try again
@@ -1703,9 +1703,16 @@ class BrowserContext:
 				else:
 					await element_handle.fill(text)
 			except Exception:
-				# last resort fallback, assume it's already focused after we clicked on it,
-				# just simulate keypresses on the entire page
-				await self.get_agent_current_page().keyboard.type(text)
+				# get the desendant contenteditable element
+				descendant_handle = await element_handle.query_selector('[contenteditable]')
+				if descendant_handle:
+					await descendant_handle.click()
+					await descendant_handle.type(text, delay=5)
+				else:
+					# last resort fallback, assume it's already focused after we clicked on it,
+					# just simulate keypresses on the entire page
+					logger.debug(f'❌  Failed to input text into element: {repr(element_node)}. Error: {str(e)}')
+					await self.get_agent_current_page().keyboard.type(text)
 
 		except Exception as e:
 			logger.debug(f'❌  Failed to input text into element: {repr(element_node)}. Error: {str(e)}')
